@@ -1,0 +1,60 @@
+version: "3.7"
+
+services:
+  app:
+    container_name: MyApp
+    restart: always        
+    build:
+      context: ./Docker/app
+#    environment:
+#      XDEBUG_REMOTE_HOST: 192.168.55.1
+      
+    volumes:
+      - ./Application:/var/www/html
+
+    networks:
+      - application
+
+    networks:
+      application:
+        aliases:
+          - php           
+
+
+  mysql:
+    container_name: MySql
+    restart: always        
+    image : mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+
+    networks:
+      application:
+        aliases:
+          - mysql_db    
+          - database    
+
+
+  nginx:
+    container_name: Nginx
+    restart: always        
+    build: 
+      context: ./Docker/nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Application:/var/www/html
+    networks:
+      - application      
+
+
+volumes:
+  db_data:
+
+networks:
+  application:
