@@ -58,6 +58,15 @@ services:
     networks:
       - frontend      
 
+  memcache:
+    container_name: Memcache
+    image: memcached:1.5-alpine
+    restart: always        
+    networks:
+      frontend:
+        aliases:
+          - memcacheserver      
+
 
 volumes:
   db_data:
