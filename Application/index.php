@@ -2,7 +2,7 @@
 
 echo "Welcome PHP " . phpversion();
 
-$dbh = new PDO('mysql:host=mysql_db;dbname=test-db', 'root', 'password');
+$dbh = new PDO('mysql:host=db;dbname=test_db', 'webuser', '#secretPassword!');
 
 $results = $dbh->query('SELECT * from table1');
 
