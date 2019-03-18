@@ -21,7 +21,9 @@ services:
   mysql:
     container_name: MySql
     restart: always        
-    image : mysql:5.7
+#    image : mysql:5.7
+    build:
+      context: ./Docker/mysql    
     volumes:
       - db_data:/var/lib/mysql
     ports:
