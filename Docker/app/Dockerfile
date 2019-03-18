@@ -1,5 +1,31 @@
 FROM markus2110/php-dev:7.2-fpm
 
+# Already done in markus2110/php-dev:7.2-fpm
+
+#WORKDIR /var/www/html
+# Composer
+#COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+
+# RUN apt-get update \
+#     && apt-get install -y wget libmagickwand-dev --no-install-recommends \
+#     && pecl install imagick xdebug \
+#     && docker-php-ext-install mbstring mysqli pdo pdo_mysql opcache intl \
+#    && docker-php-ext-enable imagick xdebug
+
+# RUN apt-get clean autoclean \
+# 	&& apt-get autoremove --yes \
+#     && rm -rf /var/lib/{apt,dpkg,cache,log}/
+
+#    Node JS
+#    && apt-get install -y gnupg --no-install-recommends \
+#    && cd ~ \
+#    && curl -sL https://deb.nodesource.com/setup_10.x -o nodesource_setup.sh \
+#    && chmod +x nodesource_setup.sh \
+#    && ~/nodesource_setup.sh \
+#    && apt-get install nodejs -y \
+    # Clear APT list
+    # && rm -rf /var/lib/apt/lists/*
 
 
 ENV PHP_CONF_DIR /usr/local/etc/php/conf.d
@@ -7,7 +33,6 @@ ENV PHP_CONF_DIR /usr/local/etc/php/conf.d
 ENV XDEBUG_REMOTE_HANDLER dbgp
 ENV XDEBUG_REMOTE_PORT 9000
 ENV XDEBUG_REMOTE_HOST=0.0.0.0
-
 
 COPY ./conf.d/* ${PHP_CONF_DIR}/
 
