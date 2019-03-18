@@ -13,9 +13,13 @@ services:
       - ./Application:/var/www/html
 
     networks:
-      application:
+      # used for the nginx service
+      frontend:
         aliases:
-          - php           
+          - php
+
+      # used for the mysql service
+      backend:
 
 
   mysql:
@@ -29,12 +33,15 @@ services:
     ports:
       - 3306:3306
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: '#theSecretOfRoot!'
+      MYSQL_USER: 'webuser'
+      MYSQL_PASSWORD: '#secretPassword!'
+      MYSQL_DATABASE: 'test_db'
 
     networks:
-      application:
+      backend:
         aliases:
-          - mysql_db    
+          - db    
           - database    
 
 
@@ -49,11 +56,12 @@ services:
     volumes:
       - ./Application:/var/www/html
     networks:
-      - application      
+      - frontend      
 
 
 volumes:
   db_data:
 
 networks:
-  application:
+  frontend:
+  backend:
