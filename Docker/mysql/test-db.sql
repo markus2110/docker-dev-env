@@ -1,5 +1,5 @@
-CREATE DATABASE  IF NOT EXISTS `test-db`;
-USE `test-db`;
+CREATE DATABASE  IF NOT EXISTS `test_db`;
+USE `test_db`;
 
 DROP TABLE IF EXISTS `table1`;
 CREATE TABLE `table1` (

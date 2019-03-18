@@ -1,9 +1,4 @@
 FROM mysql:5.7
 
-COPY ./test-db.sql /
-COPY ./sqldump.sh /
-
-RUN chmod +x sqldump.sh
-
-#CMD ["sqldump.sh"]
-
+COPY ./conf.d/* /etc/mysql/conf.d/
+COPY ./test-db.sql /docker-entrypoint-initdb.d
