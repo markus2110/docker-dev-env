@@ -3,7 +3,7 @@
 echo "<h1>Welcome PHP " . phpversion() ."</h1>";
 
 try{
-    $r = mail('mail@markus-sommerfeld.de', 'Mein Betreff', "Hallo Text");
+    $r = mail('mail@example.docker', 'The Mail Subject', "The mail text");
     var_dump($r);
 }catch(\Exception $e ){
     var_dump($e);
