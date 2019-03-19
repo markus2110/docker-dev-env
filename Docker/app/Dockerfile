@@ -27,7 +27,7 @@ FROM markus2110/php-dev:7.2-fpm
     # Clear APT list
     # && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y libmemcached-dev zlib1g-dev --no-install-recommends \
+RUN apt-get update && apt-get install -y libmemcached-dev zlib1g-dev msmtp --no-install-recommends \
     && pecl install memcached-3.1.3 \
     && docker-php-ext-enable memcached
 
@@ -39,6 +39,7 @@ ENV XDEBUG_REMOTE_PORT 9000
 ENV XDEBUG_REMOTE_HOST=0.0.0.0
 
 COPY ./conf.d/* ${PHP_CONF_DIR}/
+COPY ./msmtprc /etc/msmtprc
 
 RUN echo "; Additional xdebug settings"                         >> ${PHP_CONF_DIR}/xdebug.ini \
     && echo "xdebug.remote_handler=1"                           >> ${PHP_CONF_DIR}/xdebug.ini \
