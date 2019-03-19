@@ -3,11 +3,9 @@ version: "3.7"
 services:
   app:
     container_name: MyApp
-    restart: always        
+#    restart: always        
     build:
       context: ./Docker/app
-#    environment:
-#      XDEBUG_REMOTE_HOST: 192.168.55.1
       
     volumes:
       - ./Application:/var/www/html
@@ -24,8 +22,7 @@ services:
 
   mysql:
     container_name: MySql
-    restart: always        
-#    image : mysql:5.7
+#    restart: always        
     build:
       context: ./Docker/mysql    
     volumes:
@@ -47,7 +44,7 @@ services:
 
   nginx:
     container_name: Nginx
-    restart: always        
+#    restart: always        
     build: 
       context: ./Docker/nginx
     ports:
@@ -61,11 +58,26 @@ services:
   memcache:
     container_name: Memcache
     image: memcached:1.5-alpine
-    restart: always        
+#    restart: always        
     networks:
       frontend:
         aliases:
-          - memcacheserver      
+          - memcacheserver
+
+
+  mailcatcher:
+    container_name: mail
+    build:
+      context: ./Docker/mailcatcher
+    ports:
+      - 1025:1025
+      - 1080:1080
+#    restart: always        
+    networks:
+      frontend:
+        aliases:
+          - mailcatcher
+  
 
 
 volumes:
