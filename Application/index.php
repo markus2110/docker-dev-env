@@ -2,6 +2,16 @@
 
 echo "<h1>Welcome PHP " . phpversion() ."</h1>";
 
+try{
+    $r = mail('mail@markus-sommerfeld.de', 'Mein Betreff', "Hallo Text");
+    var_dump($r);
+}catch(\Exception $e ){
+    var_dump($e);
+    die("error");
+}
+
+
+
 
 echo "<h2>MySQL Test</h2>";
 $dbh = new PDO('mysql:host=db;dbname=test_db', 'webuser', '#secretPassword!');
