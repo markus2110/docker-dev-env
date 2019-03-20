@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  app:
+    restart: always        
+    build:
+      #context: .
+      dockerfile: Prod.Dockerfile
+
+    environment:
+      BUILD_ENV: PROD
+      
+    volumes:
+      - app_data:/var/www/html
+
+
+
+  nginx:
+    restart: always        
+    volumes:
+      - app_data:/var/www/html
+
+
+volumes:
+  db_data:
+  app_data:
+
+networks:
+  frontend:
+  backend:

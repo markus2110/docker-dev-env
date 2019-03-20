@@ -38,7 +38,7 @@ ENV XDEBUG_REMOTE_HANDLER dbgp
 ENV XDEBUG_REMOTE_PORT 9000
 ENV XDEBUG_REMOTE_HOST 0.0.0.0
 
-COPY ./conf.d/* ${PHP_CONF_DIR}/
+COPY ./Docker/app/conf.d/* ${PHP_CONF_DIR}/
 
 
 RUN echo "; Additional xdebug settings"                         >> ${PHP_CONF_DIR}/xdebug.ini \
