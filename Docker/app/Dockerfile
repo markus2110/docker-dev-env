@@ -39,10 +39,18 @@ ENV XDEBUG_REMOTE_PORT 9000
 ENV XDEBUG_REMOTE_HOST 0.0.0.0
 
 COPY ./conf.d/* ${PHP_CONF_DIR}/
-COPY ./msmtprc /etc/msmtprc
+
 
 RUN echo "; Additional xdebug settings"                         >> ${PHP_CONF_DIR}/xdebug.ini \
     && echo "xdebug.remote_handler=1"                           >> ${PHP_CONF_DIR}/xdebug.ini \
     && echo "xdebug.remote_handler=\"$XDEBUG_REMOTE_HANDLER\""  >> ${PHP_CONF_DIR}/xdebug.ini \
     && echo "xdebug.remote_port=$XDEBUG_REMOTE_PORT"            >> ${PHP_CONF_DIR}/xdebug.ini \
-    && echo "xdebug.remote_host=\"$XDEBUG_REMOTE_HOST\""        >> ${PHP_CONF_DIR}/xdebug.ini
+    && echo "xdebug.remote_host=\"$XDEBUG_REMOTE_HOST\""        >> ${PHP_CONF_DIR}/xdebug.ini \
+    && \
+    echo "account default"                                      >> /etc/msmtprc \
+    && echo "host mailcatcher"                                  >> /etc/msmtprc \
+    && echo "port 1025"                                         >> /etc/msmtprc \
+    && echo "from mail@dev.docker"                              >> /etc/msmtprc
+
+
+
