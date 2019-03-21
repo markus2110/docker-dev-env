@@ -1,8 +1,19 @@
 <?php
 
-echo "<h1>Welcome PHP " . phpversion() ."</h1>";
+echo "<h1>Welcome PHP " . phpversion() . " - ". $_SERVER['ENVIRONMENT'] ." 2</h1>";
 
-var_dump($_ENV);
+$x = ["Test"];
+
+echo "<pre>";
+var_dump($_SERVER);
+
+
+
+print_r($x[1]);
+
+
+
+
 
 // try{
 //     $r = mail('mail@example.docker', 'The Mail Subject', "The mail text");
