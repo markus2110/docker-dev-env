@@ -111,13 +111,13 @@ Vagrant.configure("2") do |config|
   #config.vm.provision "shell", path: "./Vagrant/docker-run.sh"
 
   config.trigger.after [:reload, :up, :provision] do |trigger|
-    trigger.info = "Starting docker containers"
-    trigger.run_remote = { path: "./Vagrant/docker-run.sh" }
+    # trigger.info = "Starting docker containers"
+    # trigger.run_remote = { path: "./Vagrant/docker-run.sh" }
   end
 
   config.trigger.before [:reload, :halt, :provision, :destroy] do |trigger|
-    trigger.info = "Shutting down docker containers"
-    trigger.run_remote = { path: "./Vagrant/docker-down.sh" }
+    # trigger.info = "Shutting down docker containers"
+    # trigger.run_remote = { path: "./Vagrant/docker-down.sh" }
   end
 
 
