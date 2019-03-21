@@ -1,4 +1,100 @@
-FROM markus2110/php-dev:7.2-fpm
+
+########################################
+#   PROD CONFIG                        #
+########################################
+FROM markus2110/php-dev:7.2-fpm AS PRODUCTION
+
+    ARG PHP_SETTINGS_SRC
+    ARG PHP_SETTINGS_DEST
+    ARG PHP_CONF_DIR
+    
+    ENV PHP_SETTINGS_SRC    ${PHP_SETTINGS_SRC:-php-prod-settings.ini}
+    ENV PHP_SETTINGS_DEST   ${PHP_SETTINGS_DEST:-environment.ini}
+    ENV PHP_CONF_DIR        ${PHP_CONF_DIR:-/usr/local/etc/php/conf.d}
+
+
+    # FIX for dev settings
+    RUN rm -f ${PHP_CONF_DIR}/php-dev-settings.ini
+
+    RUN apt-get update && apt-get install -y \
+            libmemcached-dev \
+            zlib1g-dev \
+        --no-install-recommends \
+        #
+        && pecl install memcached-3.1.3 \
+        && docker-php-ext-enable memcached
+
+    COPY ./Docker/php/conf.d/${PHP_SETTINGS_SRC}    ${PHP_CONF_DIR}/${PHP_SETTINGS_DEST}
+    
+    # Timezone settings
+    COPY ./Docker/php/conf.d/timezone.ini           ${PHP_CONF_DIR}/timezone.ini
+# ------------------------------------------------------------------------------------------------ #
+
+
+
+########################################
+#   QA CONFIG                          #
+########################################
+FROM PRODUCTION AS QA
+
+
+
+# ------------------------------------------------------------------------------------------------ #
+
+########################################
+#   TEST CONFIG                        #
+########################################
+FROM QA AS TEST
+
+
+
+
+# ------------------------------------------------------------------------------------------------ #
+    
+
+########################################
+#   DEVELOP CONFIG                     #
+########################################
+FROM TEST AS DEVELOP
+
+    ARG XDEBUG_HANDLER
+    ARG XDEBUG_PORT
+    ARG XDEBUG_HOST
+    ENV XDEBUG_HANDLER  ${XDEBUG_HANDLER:-dbgp}
+    ENV XDEBUG_PORT     ${XDEBUG_PORT:-9000}
+    ENV XDEBUG_HOST     ${XDEBUG_HOST:-0.0.0.0}
+
+    ARG MAILCATCHER_PORT
+    ARG MAILCATCHER_HOST
+    ENV MAILCATCHER_PORT    ${MAILCATCHER_PORT:-1025}
+    ENV MAILCATCHER_HOST    ${MAILCATCHER_HOST:-mailcatcher}    
+
+    ENV PHP_SETTINGS_SRC php-dev-settings.ini
+
+    COPY ./Docker/php/conf.d/${PHP_SETTINGS_SRC}    ${PHP_CONF_DIR}/${PHP_SETTINGS_DEST}
+    # COPY Empty xdebug file
+    COPY ./Docker/php/conf.d/xdebug.ini           ${PHP_CONF_DIR}/xdebug.ini
+
+    RUN apt-get install -y msmtp --no-install-recommends \
+        # XDEBUG 
+        && echo "; Additional xdebug settings"                  >> ${PHP_CONF_DIR}/xdebug.ini \
+        && echo "xdebug.remote_enable=1"                        >> ${PHP_CONF_DIR}/xdebug.ini \
+        && echo "xdebug.remote_handler=\"${XDEBUG_HANDLER}\""   >> ${PHP_CONF_DIR}/xdebug.ini \
+        && echo "xdebug.remote_port=${XDEBUG_PORT}"             >> ${PHP_CONF_DIR}/xdebug.ini \
+        && echo "xdebug.remote_host=\"${XDEBUG_HOST}\""         >> ${PHP_CONF_DIR}/xdebug.ini \
+        && \
+        # MSMTP Config to send mails to the mailcatcher service
+        echo "account default"                                  >> /etc/msmtprc \
+        && echo "host ${MAILCATCHER_HOST}"                      >> /etc/msmtprc \
+        && echo "port ${MAILCATCHER_PORT}"                      >> /etc/msmtprc \
+        && echo "from mail@dev.docker"                          >> /etc/msmtprc \
+        # Update php settings
+        && echo "sendmail_path = \"/usr/bin/msmtp -t\""         >> ${PHP_CONF_DIR}/${PHP_SETTINGS_DEST}
+        
+
+
+# ------------------------------------------------------------------------------------------------ #        
+
 
 # Already done in markus2110/php-dev:7.2-fpm
 
@@ -26,31 +122,3 @@ FROM markus2110/php-dev:7.2-fpm
 #    && apt-get install nodejs -y \
     # Clear APT list
     # && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update && apt-get install -y libmemcached-dev zlib1g-dev msmtp --no-install-recommends \
-    && pecl install memcached-3.1.3 \
-    && docker-php-ext-enable memcached
-
-
-ENV PHP_CONF_DIR /usr/local/etc/php/conf.d
-
-ENV XDEBUG_REMOTE_HANDLER dbgp
-ENV XDEBUG_REMOTE_PORT 9000
-ENV XDEBUG_REMOTE_HOST 0.0.0.0
-
-COPY ./Docker/app/conf.d/* ${PHP_CONF_DIR}/
-
-
-RUN echo "; Additional xdebug settings"                         >> ${PHP_CONF_DIR}/xdebug.ini \
-    && echo "xdebug.remote_enable=1"                            >> ${PHP_CONF_DIR}/xdebug.ini \
-    && echo "xdebug.remote_handler=\"$XDEBUG_REMOTE_HANDLER\""  >> ${PHP_CONF_DIR}/xdebug.ini \
-    && echo "xdebug.remote_port=$XDEBUG_REMOTE_PORT"            >> ${PHP_CONF_DIR}/xdebug.ini \
-    && echo "xdebug.remote_host=\"$XDEBUG_REMOTE_HOST\""        >> ${PHP_CONF_DIR}/xdebug.ini \
-    && \
-    echo "account default"                                      >> /etc/msmtprc \
-    && echo "host mailcatcher"                                  >> /etc/msmtprc \
-    && echo "port 1025"                                         >> /etc/msmtprc \
-    && echo "from mail@dev.docker"                              >> /etc/msmtprc
-
-
-
