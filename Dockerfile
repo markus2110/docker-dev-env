@@ -2,32 +2,18 @@
 ########################################
 #   PROD CONFIG                        #
 ########################################
-FROM markus2110/php-dev:7.2-fpm AS PRODUCTION
+FROM markus2110/php:7.2-fpm-stretch AS PRODUCTION
 
-    ARG PHP_SETTINGS_SRC
-    ARG PHP_SETTINGS_DEST
-    ARG PHP_CONF_DIR
+    # This is already done at the new php image
+    # ARG PHP_SETTINGS_SRC
+    # ARG PHP_SETTINGS_DEST
+    # ARG PHP_CONF_DIR
     
-    ENV PHP_SETTINGS_SRC    ${PHP_SETTINGS_SRC:-php-prod-settings.ini}
-    ENV PHP_SETTINGS_DEST   ${PHP_SETTINGS_DEST:-environment.ini}
-    ENV PHP_CONF_DIR        ${PHP_CONF_DIR:-/usr/local/etc/php/conf.d}
+    # ENV PHP_SETTINGS_SRC    ${PHP_SETTINGS_SRC:-php-prod-settings.ini}
+    # ENV PHP_SETTINGS_DEST   ${PHP_SETTINGS_DEST:-environment.ini}
+    # ENV PHP_CONF_DIR        ${PHP_CONF_DIR:-/usr/local/etc/php/conf.d}
 
-
-    # FIX for dev settings
-    RUN rm -f ${PHP_CONF_DIR}/php-dev-settings.ini
-
-    RUN apt-get update && apt-get install -y \
-            libmemcached-dev \
-            zlib1g-dev \
-        --no-install-recommends \
-        #
-        && pecl install memcached-3.1.3 \
-        && docker-php-ext-enable memcached
-
-    COPY ./Docker/php/conf.d/${PHP_SETTINGS_SRC}    ${PHP_CONF_DIR}/${PHP_SETTINGS_DEST}
-    
-    # Timezone settings
-    COPY ./Docker/php/conf.d/timezone.ini           ${PHP_CONF_DIR}/timezone.ini
+    # COPY ./Docker/php/conf.d/${PHP_SETTINGS_SRC}    ${PHP_CONF_DIR}/${PHP_SETTINGS_DEST}
 # ------------------------------------------------------------------------------------------------ #
 
 
@@ -69,27 +55,28 @@ FROM TEST AS DEVELOP
     ENV MAILCATCHER_PORT    ${MAILCATCHER_PORT:-1025}
     ENV MAILCATCHER_HOST    ${MAILCATCHER_HOST:-mailcatcher}    
 
-    ENV PHP_SETTINGS_SRC php-dev-settings.ini
+    ENV PHP_SETTINGS_SRC php.ini-development
 
     COPY ./Docker/php/conf.d/${PHP_SETTINGS_SRC}    ${PHP_CONF_DIR}/${PHP_SETTINGS_DEST}
     # COPY Empty xdebug file
-    COPY ./Docker/php/conf.d/xdebug.ini           ${PHP_CONF_DIR}/xdebug.ini
+    # COPY ./Docker/php/conf.d/xdebug.ini           ${PHP_CONF_DIR}/xdebug.ini
 
-    RUN apt-get install -y msmtp --no-install-recommends \
-        # XDEBUG 
-        && echo "; Additional xdebug settings"                  >> ${PHP_CONF_DIR}/xdebug.ini \
-        && echo "xdebug.remote_enable=1"                        >> ${PHP_CONF_DIR}/xdebug.ini \
-        && echo "xdebug.remote_handler=\"${XDEBUG_HANDLER}\""   >> ${PHP_CONF_DIR}/xdebug.ini \
-        && echo "xdebug.remote_port=${XDEBUG_PORT}"             >> ${PHP_CONF_DIR}/xdebug.ini \
-        && echo "xdebug.remote_host=\"${XDEBUG_HOST}\""         >> ${PHP_CONF_DIR}/xdebug.ini \
-        && \
-        # MSMTP Config to send mails to the mailcatcher service
-        echo "account default"                                  >> /etc/msmtprc \
-        && echo "host ${MAILCATCHER_HOST}"                      >> /etc/msmtprc \
-        && echo "port ${MAILCATCHER_PORT}"                      >> /etc/msmtprc \
-        && echo "from mail@dev.docker"                          >> /etc/msmtprc \
-        # Update php settings
-        && echo "sendmail_path = \"/usr/bin/msmtp -t\""         >> ${PHP_CONF_DIR}/${PHP_SETTINGS_DEST}
+    # RUN apt-get install -y msmtp --no-install-recommends \
+    #     # XDEBUG 
+    #     && docker-php-ext-enable xdebug \
+    #     && echo "; Additional xdebug settings"                  >> ${PHP_CONF_DIR}/xdebug.ini \
+    #     && echo "xdebug.remote_enable=1"                        >> ${PHP_CONF_DIR}/xdebug.ini \
+    #     && echo "xdebug.remote_handler=\"${XDEBUG_HANDLER}\""   >> ${PHP_CONF_DIR}/xdebug.ini \
+    #     && echo "xdebug.remote_port=${XDEBUG_PORT}"             >> ${PHP_CONF_DIR}/xdebug.ini \
+    #     && echo "xdebug.remote_host=\"${XDEBUG_HOST}\""         >> ${PHP_CONF_DIR}/xdebug.ini \
+    #     && \
+    #     # MSMTP Config to send mails to the mailcatcher service
+    #     echo "account default"                                  >> /etc/msmtprc \
+    #     && echo "host ${MAILCATCHER_HOST}"                      >> /etc/msmtprc \
+    #     && echo "port ${MAILCATCHER_PORT}"                      >> /etc/msmtprc \
+    #     && echo "from mail@dev.docker"                          >> /etc/msmtprc \
+    #     # Update php settings
+    #     && echo "sendmail_path = \"/usr/bin/msmtp -t\""         >> ${PHP_CONF_DIR}/${PHP_SETTINGS_DEST}
         
 
 
