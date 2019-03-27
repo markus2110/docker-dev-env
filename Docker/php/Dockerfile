@@ -1,0 +1,1 @@
+FROM markus2110/php:7.2-fpm-alpine-dev
