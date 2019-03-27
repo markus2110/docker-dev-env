@@ -3,11 +3,8 @@ version: "3.7"
 services:
 
   php:
-    image: markus2110/php:7.2-fpm-stretch
-#    build: 
-#      context:    .
-#      dockerfile: Dockerfile
-#      target :    PRODUCTION
+    build: 
+      context: ./Docker/php
     
     volumes:
       - ./Application:/var/www/html
@@ -63,13 +60,13 @@ services:
           - memcacheserver
 
 
-#   mailcatcher:
-#     image: markus2110/mailcatcher:alpine-3.5
-#     ports:
-#       - 1025:1025
-#       - 1080:1080
-#     networks:
-#       frontend:         
+  mailcatcher:
+    image: markus2110/mailcatcher:alpine-3.5
+    ports:
+      - 1025:1025
+      - 1080:1080
+    networks:
+      frontend:         
 
 volumes:
   db_data:
