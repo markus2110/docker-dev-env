@@ -3,6 +3,12 @@
 #
 $VM_BOX = 'generic/debian9'
 
+# Starts the Docker deamon on vagrant up
+$AUTOSTART_DOCKER   = true
+
+# Rebuilds the docker images
+$DOCKER_ARGUMENTS   = "--build"
+
 # Provider-specific configuration so you can fine-tune various
 # backing providers for Vagrant. These expose provider-specific options.
 # Example for VirtualBox:
@@ -14,6 +20,8 @@ $VM_NAME            = 'dev_env_docker'
 $VM_HOST_NAME       = 'dev.docker'
 # The VM Host Aliases
 $VM_HOST_ALIASES    = {
+    symfony:    'symfony.docker',
+    yii:        'yii.docker'
 }
 
 # Display the VirtualBox GUI when booting the machine

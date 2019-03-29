@@ -1,23 +1,32 @@
 version: "3.7"
 
 services:
-  app:
-    container_name: MyApp
-#    restart: always        
-    build:
-      context: ./Docker/app
-      
+
+  php:
+    build: 
+      context: ./Docker/php
+    
     volumes:
       - ./Application:/var/www/html
 
     networks:
-      # used for the nginx service
       frontend:
         aliases:
           - php
 
-      # used for the mysql service
       backend:
+ 
+  nginx:
+    container_name: Nginx
+    build: 
+      context: ./Docker/nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Application:/var/www/html
+    networks:
+      - frontend 
 
 
   mysql:
@@ -39,21 +48,7 @@ services:
       backend:
         aliases:
           - db    
-          - database    
-
-
-  nginx:
-    container_name: Nginx
-#    restart: always        
-    build: 
-      context: ./Docker/nginx
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Application:/var/www/html
-    networks:
-      - frontend      
+          - database          
 
   memcache:
     container_name: Memcache
@@ -71,8 +66,7 @@ services:
       - 1025:1025
       - 1080:1080
     networks:
-      frontend:   
-
+      frontend:         
 
 volumes:
   db_data:
