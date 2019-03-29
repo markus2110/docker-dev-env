@@ -63,7 +63,7 @@ Vagrant.configure("2") do |config|
   # argument is a set of non-required options.
   $VM_SYNC_FOLDERS.each do |sync|
     config.vm.synced_folder sync[:HOST_PATH], sync[:GUEST_PATH], type: sync[:TYPE], mount_options: sync[:OPTIONS]
-#       .linux__nfs_options: ['rw','no_subtree_check','all_squash','async']
+#       linux__nfs_options: ['rw','no_subtree_check','all_squash','async']
   end
 
   # If true, agent forwarding over SSH connections is enabled. Defaults to false.
