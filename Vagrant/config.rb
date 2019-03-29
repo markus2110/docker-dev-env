@@ -73,7 +73,7 @@ $VM_FORWARDED_PORTS = [
 #
 $VM_SYNC_FOLDERS = [
     #, #linux__nfs_options: ['rw','no_subtree_check','all_squash','async']
-    { :HOST_PATH => ".",            :GUEST_PATH => "/vagrant_data",         :TYPE => "nfs" },
+    { :HOST_PATH => ".", :GUEST_PATH => "/vagrant_data", :TYPE => "nfs", :OPTIONS => ["rw", "vers=3", "tcp", "nolock"] }
 ]
 
 
