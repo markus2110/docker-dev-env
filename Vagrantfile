@@ -113,14 +113,14 @@ Vagrant.configure("2") do |config|
   if $AUTOSTART_DOCKER then
     config.trigger.after [:reload, :up, :provision] do |trigger|
       trigger.info = "Starting docker containers"
-      trigger.run_remote = { path: "./Vagrant/Trigger/vagrant-up.sh" }
+      trigger.run_remote = { path: "./Vagrant/Trigger/docker-compose-up.sh", args: $DOCKER_ARGUMENTS }
     end
   end
 
 
   config.trigger.before [:reload, :halt, :provision, :destroy] do |trigger|
     trigger.info = "Shutting down docker containers"
-    trigger.run_remote = { path: "./Vagrant/Trigger/vagrant-stop.sh" }
+    trigger.run_remote = { path: "./Vagrant/Trigger/docker-compose-down.sh" }
   end
 
 
