@@ -62,9 +62,8 @@ Vagrant.configure("2") do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   $VM_SYNC_FOLDERS.each do |sync|
-    config.vm.synced_folder sync[:HOST_PATH], sync[:GUEST_PATH], 
-        type: sync[:TYPE], 
-        linux__nfs_options: ['rw','no_subtree_check','all_squash','async']
+    config.vm.synced_folder sync[:HOST_PATH], sync[:GUEST_PATH], type: sync[:TYPE], mount_options: sync[:OPTIONS]
+#       .linux__nfs_options: ['rw','no_subtree_check','all_squash','async']
   end
 
   # If true, agent forwarding over SSH connections is enabled. Defaults to false.
@@ -110,10 +109,10 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", path: "./Vagrant/docker-upgrade.sh"
   
   # Run docker-compose on startup
-  if $AUTOSTART_DOCKER then
+  if defined?($AUTOSTART_DOCKER) && $AUTOSTART_DOCKER then
     config.trigger.after [:reload, :up, :provision] do |trigger|
       trigger.info = "Starting docker containers"
-      trigger.run_remote = { path: "./Vagrant/Trigger/docker-compose-up.sh", args: $DOCKER_ARGUMENTS }
+      trigger.run_remote = { path: "./Vagrant/Trigger/docker-compose-up.sh", args: defined?($AUTOSTART_DOCKER) ? $DOCKER_ARGUMENTS : "" }
     end
   end
 
