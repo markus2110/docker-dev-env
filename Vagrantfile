@@ -108,16 +108,19 @@ Vagrant.configure("2") do |config|
 
   # Upgrade to latest version
   config.vm.provision "shell", path: "./Vagrant/docker-upgrade.sh"
-  #config.vm.provision "shell", path: "./Vagrant/docker-run.sh"
-
-  config.trigger.after [:reload, :up, :provision] do |trigger|
-    # trigger.info = "Starting docker containers"
-    # trigger.run_remote = { path: "./Vagrant/docker-run.sh" }
+  
+  # Run docker-compose on startup
+  if $AUTOSTART_DOCKER then
+    config.trigger.after [:reload, :up, :provision] do |trigger|
+      trigger.info = "Starting docker containers"
+      trigger.run_remote = { path: "./Vagrant/Trigger/vagrant-up.sh" }
+    end
   end
 
+
   config.trigger.before [:reload, :halt, :provision, :destroy] do |trigger|
-    # trigger.info = "Shutting down docker containers"
-    # trigger.run_remote = { path: "./Vagrant/docker-down.sh" }
+    trigger.info = "Shutting down docker containers"
+    trigger.run_remote = { path: "./Vagrant/Trigger/vagrant-stop.sh" }
   end
 
 

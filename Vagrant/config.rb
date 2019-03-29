@@ -3,6 +3,9 @@
 #
 $VM_BOX = 'generic/debian9'
 
+# Starts the Docker deamon on vagrant up
+$AUTOSTART_DOCKER = true
+
 # Provider-specific configuration so you can fine-tune various
 # backing providers for Vagrant. These expose provider-specific options.
 # Example for VirtualBox:
