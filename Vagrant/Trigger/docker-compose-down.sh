@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-echo "Starting the docker images"
+echo "Shutting down docker containers"
 
 docker-compose -f /vagrant_data/docker-compose.yml down
