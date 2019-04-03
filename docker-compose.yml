@@ -61,10 +61,10 @@ services:
 
 
   mailcatcher:
-    image: markus2110/mailcatcher:alpine-3.5
+    image: mailhog/mailhog
     ports:
       - 1025:1025
-      - 1080:1080
+      - 1080:8025
     networks:
       frontend:         
 
