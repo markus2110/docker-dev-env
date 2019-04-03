@@ -5,7 +5,7 @@
        $r = mail('mail@example.docker', 'The Mail Subject', "The mail text");
        var_dump($r);
 
-       echo "<a href='http://localhost:1080' target='_blank'>Mailcatcher</a>";
+       echo "<a href='".sprintf("http://%s:%d", $_SERVER['HTTP_HOST'], 1080)."' target='_blank'>Mailcatcher</a>";
 
    }catch(\Exception $e ){
        var_dump($e);
